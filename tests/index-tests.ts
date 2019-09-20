@@ -1,4 +1,4 @@
-import { mapEnum } from '../src';
+import { mapEnum, mapEnumToKeys, mapEnumToValues } from '../src';
 
 enum Colors {
   Red = 'RED',
@@ -28,8 +28,8 @@ describe('mapEnum', () => {
     });
   });
 
-  describe('for default mappings', () => {
-    const mapping = mapEnum(Colors);
+  describe('for key mappings', () => {
+    const mapping = mapEnumToKeys(Colors);
 
     it('can map', () => {
       expect(mapping.map(Colors.Red)).toEqual('Red');
@@ -37,6 +37,18 @@ describe('mapEnum', () => {
 
     it('can parse', () => {
       expect(mapping.parse('Red')).toEqual(Colors.Red);
+    });
+  });
+
+  describe('for value mappings', () => {
+    const mapping = mapEnumToValues(Colors);
+
+    it('can map', () => {
+      expect(mapping.map(Colors.Red)).toEqual('RED');
+    });
+
+    it('can parse', () => {
+      expect(mapping.parse('RED')).toEqual(Colors.Red);
     });
   });
 
