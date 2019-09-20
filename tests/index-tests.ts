@@ -1,4 +1,4 @@
-import { EnumMapping } from '../src';
+import { mapEnum } from '../src';
 
 enum Colors {
   Red = 'RED',
@@ -13,7 +13,7 @@ enum Shapes {
 
 describe('mapEnum', () => {
   describe('for mappings', () => {
-    const mapping = new EnumMapping(Colors, {
+    const mapping = mapEnum(Colors, {
       Red: 'red!',
       Blue: 'blue!',
       Green: 'green!',
@@ -29,7 +29,7 @@ describe('mapEnum', () => {
   });
 
   describe('for default mappings', () => {
-    const mapping = new EnumMapping(Colors);
+    const mapping = mapEnum(Colors);
 
     it('can map', () => {
       expect(mapping.map(Colors.Red)).toEqual('Red');
@@ -41,7 +41,7 @@ describe('mapEnum', () => {
   });
 
   describe('for numeric enum mappings', () => {
-    const mapping = new EnumMapping(Shapes, {
+    const mapping = mapEnum(Shapes, {
       Circle: 'circle!',
       Square: 'square!',
     });
@@ -56,7 +56,7 @@ describe('mapEnum', () => {
   });
 
   describe('for number mappings', () => {
-    const mapping = new EnumMapping(Colors, {
+    const mapping = mapEnum(Colors, {
       Red: 1,
       Blue: 10,
       Green: 100,

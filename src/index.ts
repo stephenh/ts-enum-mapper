@@ -1,3 +1,7 @@
+export function mapEnum<T, V>(enumObj: T, values?: { [key in keyof T]: V | Error }) {
+  return new EnumMapping(enumObj, values);
+}
+
 /**
  * Holds bi-directional enum <-> value mappings.
  *
@@ -9,7 +13,7 @@
  * the enum objects that TypeScript emits. You'll get a compile error if you try to pass a const
  * enum to Index's constructor.
  */
-export class EnumMapping<T, V> {
+class EnumMapping<T, V> {
   /** A mapping from the enum _key_, i.e. Red for `enum { Red = RED }`, to our mapped value. */
   private readonly values: { [key in keyof T]: V | Error };
 
