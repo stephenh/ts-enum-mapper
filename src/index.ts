@@ -56,29 +56,37 @@ class EnumMapping<T, V> {
   /** A mapping from the enum _key_, i.e. Red for `enum { Red = RED }`, to our mapped value. */
   private readonly values: { [key in keyof T]: V | Error };
 
+  private readonly enumToMappedValue: Map<T[keyof T], V | Error> = new Map();
+  private readonly mappedValueToEnum: Map<V, T[keyof T]> = new Map();
+
   constructor(private enumObj: T, values: { [key in keyof T]: V | Error }) {
     this.values = values;
+    Object.entries(this.enumObj).forEach(([enumKey, enumValue]) => {
+      const mappedValue = values[enumKey as keyof T];
+      this.enumToMappedValue.set(enumValue, mappedValue);
+      if (!(mappedValue instanceof Error)) {
+        this.mappedValueToEnum.set(mappedValue as V, enumValue);
+      }
+    });
   }
 
   // Use lambdas so we can be passed as function pointers.
   map = (enumValue: T[keyof T]): V => {
-    // Change the enum key, i.e. Colors.RED --> Red
-    const key =
-      ((Object.entries(this.enumObj)
-        .filter(([k, v]) => v === enumValue)
-        .map(([k]) => k)[0] as unknown) as keyof T) || fail();
-    const value = this.values[key] as V | Error;
-    if (value instanceof Error) {
-      throw value;
+    const mappedValue = this.enumToMappedValue.get(enumValue);
+    if (mappedValue instanceof Error) {
+      throw mappedValue;
     }
-    return value;
+    if (mappedValue === undefined) {
+      throw new Error(`Could not find value for ${enumValue}`);
+    }
+    return mappedValue;
   };
 
   parse = (mappedValue: V): T[keyof T] => {
-    const matched = Object.entries(this.values)
-      .filter(([k, v]) => v === mappedValue)
-      .map(([k]) => k as keyof T);
-    const key = matched[0] || fail(`Invalid value ${mappedValue}`);
-    return this.enumObj[key];
+    const enumValue = this.mappedValueToEnum.get(mappedValue);
+    if (enumValue === undefined) {
+      throw new Error(`Invalid mapped valued ${mappedValue}`);
+    }
+    return enumValue;
   };
 }
