@@ -1,6 +1,7 @@
 type Mapping<T, V> = {
-  [key in keyof T]: V;
+  [key in keyof T]: V | Error;
 };
+
 /**
  * Creates a 1-to-1 mapping between each enum key and the given value.
  */

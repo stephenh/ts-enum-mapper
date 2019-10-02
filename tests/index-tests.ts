@@ -28,6 +28,23 @@ describe('mapEnum', () => {
     });
   });
 
+  describe('for mappings with a known error', () => {
+    const mapping = mapEnum(Colors, {
+      Red: 'red!',
+      Blue: 'blue!',
+      Green: new Error('not green!'),
+    });
+
+    it('can map', () => {
+      expect(mapping.map(Colors.Red)).toEqual('red!');
+      expect(() => mapping.map(Colors.Green)).toThrow('not green!');
+    });
+
+    it('can parse', () => {
+      expect(mapping.parse('red!')).toEqual(Colors.Red);
+    });
+  });
+
   describe('for key mappings', () => {
     const mapping = mapEnumToKeys(Colors);
 
