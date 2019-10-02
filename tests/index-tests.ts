@@ -109,4 +109,26 @@ describe('mapEnum', () => {
       expect(mapping.parse(100)).toEqual(Colors.Green);
     });
   });
+
+  describe('for partial mappings', () => {
+    const mapping = mapEnum(Colors, {
+      Red: 'red!',
+      Blue: 'blue!',
+      Green: undefined,
+    });
+
+    it('can map', () => {
+      expect(mapping.map(Colors.Red)).toEqual('red!');
+      expect(mapping.map(Colors.Green)).toBeUndefined();
+    });
+
+    it('can parse', () => {
+      expect(mapping.parse('red!')).toEqual(Colors.Red);
+    });
+
+    it('infers the value type as string or undefined', () => {
+      const stringMapping: EnumMapping<typeof Colors, string | undefined> = mapping;
+      expect(stringMapping.map(Colors.Red)).toEqual('red!');
+    });
+  });
 });

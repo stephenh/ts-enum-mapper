@@ -124,10 +124,8 @@ class EnumMappingImpl<T, V> implements EnumMapping<T, V> {
     if (mappedValue instanceof Error) {
       throw mappedValue;
     }
-    if (mappedValue === undefined) {
-      throw new Error(`Could not find value for ${enumValue}`);
-    }
-    return mappedValue;
+    // mappedValue might be undefined if they typed the mappings that way.
+    return mappedValue!;
   };
 
   parse = (mappedValue: V): T[keyof T] => {
