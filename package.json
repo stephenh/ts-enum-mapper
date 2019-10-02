@@ -1,6 +1,6 @@
 {
   "name": "ts-enum-mapper",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "enum utility methods for TypeScript",
   "main": "build/index.js",
   "types": "build/index.d.ts",
