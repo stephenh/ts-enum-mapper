@@ -51,7 +51,7 @@ const v3s = mapValues3(Foo, { a: '1', b: '2' }); // inferred unknown
  *
  * I.e. `map(Colors.Red) --> "Red"` and `parse("Red") --> Colors.Red`.
  */
-export function mapEnumToKeys<T, V>(enumObj: T): EnumMapping<T, V> {
+export function mapEnumToKeys<T>(enumObj: T): EnumMapping<T, string> {
   // Set values to Red: Red, Blue: Blue, etc.
   return new EnumMappingImpl(
     enumObj,
@@ -69,7 +69,8 @@ export function mapEnumToKeys<T, V>(enumObj: T): EnumMapping<T, V> {
  *
  * I.e. `map(Colors.Red) --> "RED"` and `parse("RED") --> Colors.Red`.
  */
-export function mapEnumToValues<T, V>(enumObj: T): EnumMapping<T, V> {
+// TODO Need to try and infer string / number from `enumObj`.
+export function mapEnumToValues<T>(enumObj: T): EnumMapping<T, string> {
   // Set values to Red: RED, Blue: BLUE, etc.
   return new EnumMappingImpl(
     enumObj,

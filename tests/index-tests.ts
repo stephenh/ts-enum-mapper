@@ -65,6 +65,11 @@ describe('mapEnum', () => {
     it('can parse', () => {
       expect(mapping.parse('Red')).toEqual(Colors.Red);
     });
+
+    it('infers the value type as string', () => {
+      const stringMapping: EnumMapping<typeof Colors, string> = mapping;
+      expect(stringMapping.map(Colors.Red)).toEqual('Red');
+    });
   });
 
   describe('for value mappings', () => {
@@ -76,6 +81,11 @@ describe('mapEnum', () => {
 
     it('can parse', () => {
       expect(mapping.parse('RED')).toEqual(Colors.Red);
+    });
+
+    it('infers the value type as string', () => {
+      const stringMapping: EnumMapping<typeof Colors, string> = mapping;
+      expect(stringMapping.map(Colors.Red)).toEqual('RED');
     });
   });
 
@@ -91,6 +101,23 @@ describe('mapEnum', () => {
 
     it('can parse', () => {
       expect(mapping.parse('square!')).toEqual(Shapes.Square);
+    });
+  });
+
+  describe('for numeric enum value mappings', () => {
+    const mapping = mapEnumToValues(Shapes);
+
+    it('can map', () => {
+      expect(mapping.map(Shapes.Circle)).toEqual(0);
+    });
+
+    it.skip('can parse', () => {
+      // expect(mapping.parse(0)).toEqual(Shapes.Circle);
+    });
+
+    it.skip('infers the value type as string', () => {
+      // const numberMapping: EnumMapping<typeof Shapes, number> = mapping;
+      // expect(numberMapping.map(Shapes.Circle)).toEqual(0);
     });
   });
 
