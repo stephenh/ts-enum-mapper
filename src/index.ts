@@ -4,10 +4,47 @@ type Mapping<T, V> = {
 
 /**
  * Creates a 1-to-1 mapping between each enum key and the given value.
+ *
+ * The `V extends M[keyof T]` is a little weird, but see https://stackoverflow.com/q/58207537/355031.
+ *
+ * Mappings that have errors included, i.e. `Red: new Error()`, are still mapped as
+ * if the error was not included, i.e. as strings/numbers/etc. This is technically
+ * not as type-safe, i.e. mapping it as `Red: undefined`, is a better alternative
+ * if your use case needs it.
  */
-export function mapEnum<T, V>(enumObj: T, values: Mapping<T, V>): EnumMapping<T, V> {
-  return new EnumMappingImpl(enumObj, values);
+export function mapEnum<T, M extends Record<keyof T, unknown>, V extends Exclude<M[keyof T], Error>>(
+  enumObj: T,
+  values: M
+): EnumMapping<T, V> {
+  return new EnumMappingImpl(enumObj, values as any);
 }
+
+type Values<V> = {
+  a: V;
+  b: V;
+};
+
+function mapValues<V>(v: Values<V>): V {
+  return v as any;
+}
+const vn = mapValues({ a: 1, b: 2 }); // inferred number
+const vs = mapValues({ a: '1', b: '2' }); // inferred string
+
+function mapValues2<V>(v: { [key: string]: V }): V {
+  return v as any;
+}
+const v2n = mapValues2({ a: 1, b: 2 }); // inferred number
+const v2s = mapValues2({ a: '1', b: '2' }); // inferred string
+
+enum Foo {
+  a,
+  b,
+}
+function mapValues3<K, V>(o: K, v: { [key in keyof K]: V }): V {
+  return v as any;
+}
+const v3n = mapValues3(Foo, { a: 1, b: 2 }); // inferred unknown
+const v3s = mapValues3(Foo, { a: '1', b: '2' }); // inferred unknown
 
 /**
  * Returns a map of the enum to/from it's keys as strings
@@ -101,3 +138,7 @@ class EnumMappingImpl<T, V> implements EnumMapping<T, V> {
     return enumValue;
   };
 }
+
+export type Public<T> = {
+  [key in keyof T]: T[key];
+};

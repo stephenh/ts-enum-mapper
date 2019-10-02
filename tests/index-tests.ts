@@ -1,4 +1,4 @@
-import { mapEnum, mapEnumToKeys, mapEnumToValues } from '../src';
+import { EnumMapping, mapEnum, mapEnumToKeys, mapEnumToValues } from '../src';
 
 enum Colors {
   Red = 'RED',
@@ -26,6 +26,11 @@ describe('mapEnum', () => {
     it('can parse', () => {
       expect(mapping.parse('red!')).toEqual(Colors.Red);
     });
+
+    it('infers the value type as string', () => {
+      const stringMapping: EnumMapping<typeof Colors, string> = mapping;
+      expect(stringMapping.map(Colors.Red)).toEqual('red!');
+    });
   });
 
   describe('for mappings with a known error', () => {
@@ -42,6 +47,11 @@ describe('mapEnum', () => {
 
     it('can parse', () => {
       expect(mapping.parse('red!')).toEqual(Colors.Red);
+    });
+
+    it('infers the value type as string', () => {
+      const stringMapping: EnumMapping<typeof Colors, string> = mapping;
+      expect(stringMapping.map(Colors.Red)).toEqual('red!');
     });
   });
 
