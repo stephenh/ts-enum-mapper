@@ -1,8 +1,11 @@
+type Mapping<T, V> = {
+  [key in keyof T]: V;
+};
 /**
  * Creates a 1-to-1 mapping between each enum key and the given value.
  */
-export function mapEnum<T, V>(enumObj: T, values: { [key in keyof T]: V | Error }) {
-  return new EnumMapping(enumObj, values);
+export function mapEnum<T, V>(enumObj: T, values: Mapping<T, V>): EnumMapping<T, V> {
+  return new EnumMappingImpl(enumObj, values);
 }
 
 /**
@@ -10,9 +13,9 @@ export function mapEnum<T, V>(enumObj: T, values: { [key in keyof T]: V | Error 
  *
  * I.e. `map(Colors.Red) --> "Red"` and `parse("Red") --> Colors.Red`.
  */
-export function mapEnumToKeys<T, V>(enumObj: T) {
+export function mapEnumToKeys<T, V>(enumObj: T): EnumMapping<T, V> {
   // Set values to Red: Red, Blue: Blue, etc.
-  return new EnumMapping(
+  return new EnumMappingImpl(
     enumObj,
     Object.assign(
       {},
@@ -28,9 +31,9 @@ export function mapEnumToKeys<T, V>(enumObj: T) {
  *
  * I.e. `map(Colors.Red) --> "RED"` and `parse("RED") --> Colors.Red`.
  */
-export function mapEnumToValues<T, V>(enumObj: T) {
+export function mapEnumToValues<T, V>(enumObj: T): EnumMapping<T, V> {
   // Set values to Red: RED, Blue: BLUE, etc.
-  return new EnumMapping(
+  return new EnumMappingImpl(
     enumObj,
     Object.assign(
       {},
@@ -39,6 +42,13 @@ export function mapEnumToValues<T, V>(enumObj: T) {
       })
     )
   );
+}
+
+/** A bi-directional enum <-> value mappings. */
+export interface EnumMapping<T, V> {
+  map(enumValue: T[keyof T]): V;
+
+  parse(mappedValue: V): T[keyof T];
 }
 
 /**
@@ -52,7 +62,7 @@ export function mapEnumToValues<T, V>(enumObj: T) {
  * the enum objects that TypeScript emits. You'll get a compile error if you try to pass a const
  * enum to Index's constructor.
  */
-class EnumMapping<T, V> {
+class EnumMappingImpl<T, V> implements EnumMapping<T, V> {
   /** A mapping from the enum _key_, i.e. Red for `enum { Red = RED }`, to our mapped value. */
   private readonly values: { [key in keyof T]: V | Error };
 
