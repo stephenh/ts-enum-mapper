@@ -1,4 +1,4 @@
-import { EnumMapping, mapEnum, mapEnumToKeys, mapEnumToValues } from '../src';
+import { EnumMapping, mapEnum, mapEnumToKeys, mapEnumToValues, mapEnumWithFn } from '../src';
 
 enum Colors {
   Red = 'RED',
@@ -9,6 +9,11 @@ enum Colors {
 enum Shapes {
   Circle,
   Square,
+}
+
+export enum FontSizeInPixels {
+  F1 = 108,
+  F2 = 96,
 }
 
 describe('mapEnum', () => {
@@ -156,6 +161,20 @@ describe('mapEnum', () => {
     it('infers the value type as string or undefined', () => {
       const stringMapping: EnumMapping<typeof Colors, string | undefined> = mapping;
       expect(stringMapping.map(Colors.Red)).toEqual('red!');
+    });
+  });
+
+  describe('mapEnumWithFn', () => {
+    const FontSizeInRem = mapEnumWithFn(FontSizeInPixels, pixels => (pixels / 2).toFixed(2) + 'rem');
+
+    it('maps', () => {
+      expect(FontSizeInRem.F1).toEqual('54.00rem');
+      expect(FontSizeInRem.F2).toEqual('48.00rem');
+    });
+
+    it('is typed correctly', () => {
+      const f: Record<keyof typeof FontSizeInPixels, string> = FontSizeInRem;
+      expect(f.F1).toEqual('54.00rem');
     });
   });
 });
