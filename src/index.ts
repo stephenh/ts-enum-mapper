@@ -1,7 +1,3 @@
-type Mapping<T, V> = {
-  [key in keyof T]: V | Error;
-};
-
 /**
  * Creates a 1-to-1 mapping between each enum key and the given value.
  *
@@ -138,6 +134,3 @@ class EnumMappingImpl<T, V> implements EnumMapping<T, V> {
   };
 }
 
-export type Public<T> = {
-  [key in keyof T]: T[key];
-};
