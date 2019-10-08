@@ -109,5 +109,9 @@ class EnumMappingImpl<T, V> implements EnumMapping<T, V> {
 
 /** Returns a record with all of keys of enum `T` with their values mapped by `fn`. */
 export function mapEnumWithFn<T, V1 extends T[keyof T], V2>(enumObj: T, fn: (value: V1) => V2): Record<keyof T, V2> {
-  return Object.fromEntries(Object.entries(enumObj).map(([key, value]) => [key, fn(value)])) as Record<keyof T, V2>;
+  return Object.entries(enumObj)
+    .map(([key, value]) => [key, fn(value)])
+    .reduce((obj, [key, value]) => {
+      return { ...obj, [key as string]: value };
+    }, {}) as Record<keyof T, V2>;
 }
