@@ -15,33 +15,6 @@ export function mapEnum<T, M extends Record<keyof T, unknown>, V extends Exclude
   return new EnumMappingImpl(enumObj, values as any);
 }
 
-type Values<V> = {
-  a: V;
-  b: V;
-};
-
-function mapValues<V>(v: Values<V>): V {
-  return v as any;
-}
-const vn = mapValues({ a: 1, b: 2 }); // inferred number
-const vs = mapValues({ a: '1', b: '2' }); // inferred string
-
-function mapValues2<V>(v: { [key: string]: V }): V {
-  return v as any;
-}
-const v2n = mapValues2({ a: 1, b: 2 }); // inferred number
-const v2s = mapValues2({ a: '1', b: '2' }); // inferred string
-
-enum Foo {
-  a,
-  b,
-}
-function mapValues3<K, V>(o: K, v: { [key in keyof K]: V }): V {
-  return v as any;
-}
-const v3n = mapValues3(Foo, { a: 1, b: 2 }); // inferred unknown
-const v3s = mapValues3(Foo, { a: '1', b: '2' }); // inferred unknown
-
 /**
  * Returns a map of the enum to/from it's keys as strings
  *
